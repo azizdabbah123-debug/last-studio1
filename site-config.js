@@ -1,4 +1,3 @@
 window.LAST_STUDIO_CONFIG = {
-  workerUrl: "https://last-studio-orders.azizdabbah123.workers.dev",
-  siteKey: "0x4AAAAAAAGHmEBW35Gj-p6zK"
+  workerUrl: "https://last-studio-orders.azizdabbah123.workers.dev"
 };

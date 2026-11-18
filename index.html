@@ -490,14 +490,13 @@ select:focus{
     <label class="order-field">اكتب تفاصيل طلبك *
      <textarea name="details" required maxlength="3000" placeholder="اكتب كل التفاصيل التي نحتاج معرفتها عن طلبك..."></textarea>
     </label>
-   </div>
-   <div class="order-section"><h3>التحقق الأمني</h3><div id="turnstileMount" aria-label="التحقق الأمني"></div><p class="order-note">يلزم إكمال التحقق قبل إرسال الطلب.</p></div>
+   </div><p class="order-note">يلزم إكمال التحقق قبل إرسال الطلب.</p></div>
   <button class="btn order-submit" id="submitOrder" type="submit">إرسال الطلب إلى المتجر</button>
    <div class="order-status" id="orderStatus" role="status" aria-live="polite"></div>
   </form>
  </div>
 </div>
-<script src="site-config.js"></script><script>window.onLASTTurnstileLoaded=function(){const cfg=window.LAST_STUDIO_CONFIG;if(!cfg||!cfg.siteKey||cfg.siteKey.includes('REPLACE_'))return;window.lastTurnstileWidgetId=turnstile.render('#turnstileMount',{sitekey:cfg.siteKey,theme:'dark'});};</script><script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onLASTTurnstileLoaded&render=explicit" async defer></script>
+<script src="site-config.js"></script>
 <script>
 (function () {
   const form = document.getElementById('lastStudioOrder');
@@ -571,8 +570,7 @@ select:focus{
     }
 
     try {
-      if (!window.LAST_STUDIO_CONFIG || !window.LAST_STUDIO_CONFIG.workerUrl || !window.LAST_STUDIO_CONFIG.siteKey) throw new Error('لم يكتمل إعداد إرسال الطلبات بعد.');
-      if (!data['cf-turnstile-response']) throw new Error('أكمل التحقق الأمني أولاً.');
+      if (!window.LAST_STUDIO_CONFIG || !window.LAST_STUDIO_CONFIG.workerUrl) throw new Error('لم يكتمل إعداد إرسال الطلبات بعد.');
       const response = await fetch(window.LAST_STUDIO_CONFIG.workerUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -581,11 +579,13 @@ select:focus{
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.error || 'تعذّر إرسال الطلب. حاول مرة أخرى.');
 
+      status.style.borderColor = '#55c99566';
+      status.style.background = '#1b9b6418';
+      status.style.color = '#d8ffea';
       status.textContent = 'تم استلام طلبك بنجاح! وصل إلى فريق LAST STUDIO في المتجر.';
       status.style.display = 'block';
       form.reset();
       updateFields();
-      if (window.turnstile && window.lastTurnstileWidgetId !== undefined) window.turnstile.reset(window.lastTurnstileWidgetId);
     } catch (error) {
       status.textContent = error.message || 'حدث خطأ أثناء الإرسال.';
       status.style.display = 'block';
@@ -593,7 +593,6 @@ select:focus{
       status.style.background = '#9b242418';
       status.style.color = '#ffe1e1';
     } finally {
-      if (window.turnstile && window.lastTurnstileWidgetId !== undefined) window.turnstile.reset(window.lastTurnstileWidgetId);
       submit.disabled = false;
       submit.textContent = 'إرسال الطلب إلى المتجر';
     }
